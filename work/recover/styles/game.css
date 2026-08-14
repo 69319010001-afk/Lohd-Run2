@@ -1,0 +1,222 @@
+/* =========================================================
+   game.css — canvas stage, HUD, touch controls
+   ========================================================= */
+#gameScreen.screen { max-width: none; padding: 0; }
+
+.game-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  aspect-ratio: 960 / 540;
+  background: #000;
+  overflow: hidden;
+  border-radius: 0;
+}
+@media (min-width: 700px) {
+  .game-wrap { margin-top: 14px; border-radius: var(--radius-md); box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  touch-action: none;
+}
+
+/* ---------- HUD ---------- */
+.hud {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 14px;
+  pointer-events: none;
+  font-family: var(--font-display);
+}
+.hud-left, .hud-right { display: flex; flex-direction: column; gap: 6px; pointer-events: auto; }
+.hud-right { align-items: flex-end; }
+.hud-center { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 2px; }
+
+.heart { font-size: 16px; letter-spacing: 2px; filter: drop-shadow(0 2px 2px rgba(0,0,0,.5)); }
+.heart .lost { opacity: .25; filter: grayscale(1); }
+
+.pill {
+  background: rgba(21,15,48,.72);
+  border: 1px solid rgba(244,185,63,.4);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cream);
+  transition: transform .15s cubic-bezier(.34,1.56,.64,1);
+}
+.pill.bump { transform: scale(1.18); }
+.pill .delta {
+  position: absolute;
+  color: var(--gold);
+  font-weight: 800;
+  font-size: 13px;
+  animation: floatUp .8s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-26px); }
+}
+
+#stageLabel {
+  background: rgba(21,15,48,.72);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.combo {
+  font-size: 12px;
+  color: var(--teal);
+  font-weight: 800;
+  min-height: 14px;
+}
+.progress {
+  width: min(60vw, 320px);
+  height: 6px;
+  background: rgba(255,255,255,.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress i {
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  transition: width .25s ease;
+}
+
+.energy {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(21,15,48,.72);
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.energy i {
+  display: block; width: 60px; height: 6px;
+  background: rgba(255,255,255,.18); border-radius: 999px; overflow: hidden;
+  position: relative;
+}
+.energy i::after {
+  content: ""; position: absolute; inset: 0; width: var(--energy, 100%);
+  background: linear-gradient(90deg, #ffd35c, var(--gold));
+}
+.pause {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(21,15,48,.72);
+  border: 1px solid rgba(255,255,255,.2);
+  color: var(--cream);
+  font-weight: 800;
+}
+
+.powerup-bar {
+  position: absolute;
+  top: 62px; left: 14px;
+  display: flex; gap: 6px;
+  pointer-events: none;
+}
+.powerup-chip {
+  background: rgba(21,15,48,.78);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; gap: 4px;
+}
+.powerup-chip i {
+  font-style: normal; font-size: 11px; opacity: .8;
+}
+
+/* ---------- Touch controls ---------- */
+.touch-controls {
+  position: absolute;
+  bottom: 14px; left: 0; right: 0;
+  display: none;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+@media (pointer: coarse) {
+  .touch-controls { display: flex; }
+}
+.touch-controls button {
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  background: rgba(244,185,63,.22);
+  border: 2px solid rgba(244,185,63,.6);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  backdrop-filter: blur(2px);
+}
+.touch-controls button:active { background: rgba(244,185,63,.42); }
+
+/* ---------- Modals ---------- */
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(10,7,24,.68);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+.modal-card {
+  background: linear-gradient(165deg, #2c2058, #1c1440);
+  border: 1px solid rgba(244,185,63,.35);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+}
+.modal-card.small { max-width: 300px; }
+.modal-card h2 { font-family: var(--font-display); margin-top: 0; }
+.modal-close {
+  position: absolute; top: 12px; right: 14px;
+  background: transparent; color: var(--cream); font-size: 20px; opacity: .7;
+}
+.question-icon { font-size: 34px; }
+.answers { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.answer-btn {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.18);
+  color: var(--cream);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 14px;
+}
+.answer-btn:hover { border-color: var(--gold); }
+.answer-btn.correct { background: rgba(43,179,163,.25); border-color: var(--teal); }
+.answer-btn.wrong { background: rgba(229,72,77,.25); border-color: var(--danger); }
+.question-time { margin-top: 14px; height: 6px; background: rgba(255,255,255,.14); border-radius: 999px; overflow: hidden; }
+.question-time i { display: block; height: 100%; width: 100%; background: var(--gold); transform-origin: left; }
+
+/* login modal inputs */
+#loginModal input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.06);
+  color: var(--cream);
+  font-size: 14px;
+}
+#loginModal input::placeholder { color: rgba(255,255,255,.45); }
+#loginModal button { width: 100%; margin-top: 8px; }

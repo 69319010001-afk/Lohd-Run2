@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>ปลาหลดรั้น 101 — LOHD RUN 101</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #06192c;
+        color: #fff;
+        font-family: system-ui, "Noto Sans Thai", sans-serif;
+      }
+      button,
+      input {
+        font: inherit;
+        color: inherit;
+      }
+      .hidden {
+        display: none !important;
+      }
+      #app {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+      }
+      .shell {
+        width: min(1050px, 100%);
+        min-height: 100vh;
+        background: linear-gradient(#0c3554, #06192c);
+      }
+      header {
+        height: 76px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 18px;
+        background: #092640;
+        border-bottom: 1px solid #ffffff25;
+      }
+      .logo {
+        font-size: 38px;
+      }
+      .title {
+        flex: 1;
+      }
+      .title h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .title small {
+        color: #78eaf0;
+      }
+      nav {
+        display: flex;
+        gap: 7px;
+      }
+      .icon-btn,
+      .btn {
+        border: 1px solid #ffffff30;
+        background: #ffffff12;
+        border-radius: 13px;
+        padding: 9px 12px;
+        font-weight: 800;
+      }
+      .primary {
+        background: linear-gradient(135deg, #ffc13f, #ff7347);
+        color: #142239;
+        border: 0;
+      }
+      .screen {
+        padding: 30px;
+      }
+      .hero {
+        min-height: 480px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+      }
+      .hero h2 {
+        font-size: clamp(42px, 8vw, 76px);
+        line-height: 0.95;
+        margin: 10px;
+      }
+      .hero h2 span,
+      .eyebrow {
+        color: #55e6e6;
+      }
+      .hero p,
+      .muted {
+        color: #b9d5dc;
+      }
+      .hero-actions,
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 18px;
+      }
+      .stat,
+      .pill {
+        background: #06192cdd;
+        border: 1px solid #fff3;
+        border-radius: 999px;
+        padding: 8px 12px;
+      }
+      .mascot {
+        font-size: 100px;
+      }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .stages,
+      .passport {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+        max-height: 65vh;
+        overflow: auto;
+      }
+      .stage,
+      .stamp {
+        background: #103653;
+        border: 1px solid #ffffff24;
+        border-radius: 16px;
+        padding: 14px;
+        text-align: left;
+      }
+      .stage h3 {
+        margin: 8px 0;
+      }
+      .stage:disabled {
+        opacity: 0.45;
+      }
+      .stamp {
+        text-align: center;
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+      }
+      .stamp.got {
+        border: 3px double #ffc13f;
+        color: #ffc13f;
+      }
+      .namebox {
+        display: flex;
+        gap: 8px;
+      }
+      .namebox input {
+        flex: 1;
+        background: #ffffff12;
+        border: 1px solid #fff3;
+        border-radius: 12px;
+        padding: 10px;
+      }
+      .board {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .board td,
+      .board th {
+        padding: 10px;
+        border-bottom: 1px solid #ffffff20;
+      }
+      .game-wrap {
+        position: relative;
+        height: calc(100vh - 76px);
+        min-height: 500px;
+        overflow: hidden;
+        background: #8bd9e4;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+      .hud {
+        position: absolute;
+        z-index: 3;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        pointer-events: none;
+      }
+      .hud .spacer {
+        flex: 1;
+      }
+      .pause {
+        pointer-events: auto;
+      }
+      .energy {
+        width: 130px;
+      }
+      .energybar {
+        height: 10px;
+        background: #ffffff25;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .energybar i {
+        display: block;
+        height: 100%;
+        background: #55e6e6;
+      }
+      .water-meter {
+        width: 108px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .waterbar {
+        flex: 1;
+        height: 10px;
+        overflow: hidden;
+        border-radius: 8px;
+        background: #ffffff25;
+        box-shadow: inset 0 1px 2px #001b3388;
+      }
+      .waterbar i {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #1a8cff, #76eaff);
+        transition: width 0.18s linear;
+      }
+      .brand-logo {
+        width: 48px;
+        height: 48px;
+        border-radius: 15px;
+        object-fit: cover;
+        object-position: 51% 49%;
+        box-shadow: 0 0 0 2px #ffc13f, 0 8px 20px #001b4388;
+      }
+      .tutorial-wrap {
+        position: relative;
+        min-height: calc(100vh - 106px);
+        overflow: hidden;
+        border-radius: 24px;
+        background: linear-gradient(180deg,#06345f 0%,#087eaa 58%,#0ab3bd 100%);
+        box-shadow: inset 0 0 80px #001f53, 0 18px 55px #00102088;
+      }
+      .tutorial-wrap:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 18% 24%,#c7ffff55 0 5px,transparent 7px),radial-gradient(circle at 75% 65%,#d9ffff44 0 8px,transparent 10px),linear-gradient(115deg,transparent 20%,#a8ffff18 35%,transparent 50%);
+        background-size: 110px 140px,170px 190px,100% 100%;
+        animation: bubbles 7s linear infinite;
+      }
+      @keyframes bubbles { to { background-position: 20px -180px,-35px -240px,0 0 } }
+      .tutorial-lab { position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 130px,#dfffff15 132px 136px,transparent 138px 260px);animation:labScroll 3.2s linear infinite; }
+      .tutorial-lab:after { content:"";position:absolute;left:-20%;right:-20%;bottom:0;height:24%;background:repeating-linear-gradient(100deg,#87d8dc 0 34px,#69bbc6 36px 70px,#317c8e 72px 108px);border-top:8px solid #c9ffff;box-shadow:0 -14px 30px #6cffff44;animation:floorScroll 1.15s linear infinite; }
+      @keyframes labScroll { to { background-position:-260px 0 } }
+      @keyframes floorScroll { to { background-position:-108px 0 } }
+      .tutorial-card { position:absolute;z-index:4;top:28px;left:50%;transform:translateX(-50%);width:min(520px,calc(100% - 32px));padding:18px 22px;text-align:center;border:1px solid #bffaff88;border-radius:20px;background:#031f3bd9;box-shadow:0 16px 42px #00152b99; }
+      .tutorial-card h2 { margin:4px 0;color:#fff; }
+      .tutorial-step { color:#7ff3ff;font-weight:900;letter-spacing:.08em; }
+      .tutorial-progress { display:flex;justify-content:center;gap:7px;margin-top:12px; }
+      .tutorial-progress i { width:38px;height:5px;border-radius:5px;background:#ffffff2a; }
+      .tutorial-progress i.done { background:#ffc13f;box-shadow:0 0 12px #ffc13f; }
+      .tutorial-fish { position:absolute;z-index:3;left:13%;bottom:20%;width:136px;height:136px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 12px 8px #003b5c88);transition:transform .35s cubic-bezier(.2,.8,.3,1); }
+      .tutorial-fish.jump { transform:translateY(-125px) rotate(-5deg); }
+      .tutorial-fish.slide { transform:scaleX(1.12) scaleY(.7) translateY(25px); }
+      .tutorial-fish.exit { animation:tutorialExit 1s ease-in forwards; }
+      @keyframes tutorialExit { 45%{transform:translateY(-150px) rotate(-8deg)} 100%{transform:translate(45vw,-110vh) rotate(-18deg)} }
+      .tutorial-prop { position:absolute;z-index:2;left:82%;bottom:24%;font-size:68px;filter:drop-shadow(0 8px 7px #00334e88); }
+      .tutorial-prop.approach { animation:propApproach 3.3s linear forwards; }
+      @keyframes propApproach { 0%{left:92%} 68%{left:52%} 100%{left:30%} }
+      .tutorial-callout { position:absolute;z-index:5;right:7%;top:44%;max-width:260px;padding:12px 16px;border-radius:16px;background:#fff4ce;color:#17334b;font-weight:900;box-shadow:0 10px 25px #001b3977;animation:calloutPulse 1s ease-in-out infinite alternate; }
+      .tutorial-callout:after { content:"";position:absolute;left:-12px;bottom:14px;border:12px solid transparent;border-right-color:#fff4ce;border-left:0; }
+      @keyframes calloutPulse { to { transform:translateY(-5px) } }
+      .tutorial-controls { position:absolute;z-index:5;left:0;right:0;bottom:28px;display:flex;justify-content:center;gap:16px; }
+      .tutorial-controls button { min-width:120px;font-size:18px; }
+      .bubble { position:absolute;border:2px solid #dfffff88;border-radius:50%;animation:floatBubble 5s linear infinite; }
+      @keyframes floatBubble { from{transform:translateY(20vh);opacity:0} 15%{opacity:.8} to{transform:translateY(-105vh);opacity:0} }
+      .controls {
+        position: absolute;
+        z-index: 4;
+        bottom: 14px;
+        left: 14px;
+        right: 14px;
+        display: flex;
+        justify-content: space-between;
+        pointer-events: none;
+      }
+      .control {
+        pointer-events: auto;
+        width: 82px;
+        height: 62px;
+        border-radius: 20px;
+        border: 1px solid #fff8;
+        background: #06192cbb;
+        font-size: 25px;
+        touch-action: none;
+      }
+      .hint {
+        position: absolute;
+        bottom: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #06192c99;
+        padding: 6px 10px;
+        border-radius: 10px;
+      }
+      .overlay {
+        position: absolute;
+        z-index: 10;
+        inset: 0;
+        background: #020d18dd;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+      }
+      .panel {
+        width: min(550px, 100%);
+        background: #0d304c;
+        border: 1px solid #fff3;
+        border-radius: 22px;
+        padding: 22px;
+        text-align: center;
+      }
+      .answers {
+        display: grid;
+        gap: 8px;
+      }
+      .answer {
+        background: #ffffff12;
+        border: 1px solid #fff3;
+        border-radius: 12px;
+        padding: 11px;
+      }
+      .answer.good {
+        background: #18834c;
+      }
+      .answer.bad {
+        background: #963d3d;
+      }
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin: 15px;
+      }
+      .result-grid div {
+        background: #ffffff10;
+        padding: 10px;
+        border-radius: 12px;
+      }
+      .result-grid b {
+        display: block;
+        color: #ffc13f;
+        font-size: 22px;
+      }
+      .toast {
+        position: fixed;
+        z-index: 99;
+        bottom: 20px;
+        left: 50%;
+        transform: translate(-50%, 15px);
+        opacity: 0;
+        background: #071b32;
+        padding: 10px 16px;
+        border-radius: 12px;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+      @media (max-width: 700px) {
+        .text {
+          display: none;
+        }
+        .hud {
+          gap: 4px;
+          top: 8px;
+          left: 8px;
+          right: 8px;
+          flex-wrap: wrap;
+        }
+        .hud .pill {
+          padding: 7px 9px;
+        }
+        .water-meter {
+          width: 88px;
+        }
+        .energy {
+          width: 94px;
+        }
+        .screen {
+          padding: 18px;
+        }
+        .game-wrap {
+          height: calc(100vh - 76px);
+        }
+      }
+    </style>
+    <style>
+      :root {
+        --navy: #06192c;
+        --deep: #0a2942;
+        --cyan: #55e6e6;
+        --gold: #ffc13f;
+        --coral: #ff7347;
+        --cream: #fff5d8;
+      }
+      body {
+        background: radial-gradient(
+          circle at 50% -20%,
+          #27889b 0,
+          #0b3956 34%,
+          #04111f 78%
+        );
+      }
+      #app {
+        padding: 18px;
+      }
+      .shell {
+        min-height: min(920px, calc(100vh - 36px));
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid #ffffff2b;
+        box-shadow: 0 30px 90px #000b;
+        background: linear-gradient(145deg, #0d3b5d, #06192c 64%);
+      }
+      header {
+        height: 82px;
+        padding: 12px 22px;
+        background: linear-gradient(90deg, #082740f5, #104e69f0);
+        backdrop-filter: blur(16px);
+        position: relative;
+        z-index: 20;
+      }
+      .logo {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 17px;
+        background: linear-gradient(145deg, var(--gold), var(--coral));
+        box-shadow:
+          inset 0 0 0 3px #fff6,
+          0 8px 22px #0005;
+      }
+      .icon-btn,
+      .btn {
+        transition:
+          transform 0.18s,
+          background 0.18s,
+          box-shadow 0.18s;
+      }
+      .icon-btn:hover,
+      .btn:hover {
+        transform: translateY(-2px);
+        background: #ffffff20;
+      }
+      .primary {
+        padding: 13px 22px;
+        box-shadow:
+          0 6px 0 #a84327,
+          0 12px 28px #ff734733;
+      }
+      .primary:active {
+        transform: translateY(4px);
+        box-shadow: 0 2px 0 #a84327;
+      }
+      .hero {
+        min-height: 590px;
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+        text-align: left;
+        padding: clamp(20px, 5vw, 68px);
+        position: relative;
+        isolation: isolate;
+      }
+      .hero:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 76% 42%, #55e6e633, transparent 31%),
+          linear-gradient(115deg, transparent 55%, #ffc13f12);
+        z-index: -1;
+      }
+      .hero h2 {
+        margin: 10px 0 18px;
+        font-size: clamp(48px, 7vw, 82px);
+        letter-spacing: -0.04em;
+        text-shadow: 0 10px 30px #0006;
+      }
+      .hero p {
+        font-size: 18px;
+        max-width: 560px;
+        line-height: 1.7;
+      }
+      .hero-actions,
+      .stats {
+        justify-content: flex-start;
+        margin-left: 0;
+      }
+      .eyebrow {
+        font-weight: 900;
+        letter-spacing: 0.16em;
+      }
+      .mascot {
+        position: relative;
+        display: grid;
+        place-items: center;
+        height: 390px;
+      }
+      .mascot:before,
+      .mascot:after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+      }
+      .mascot:before {
+        width: 310px;
+        height: 310px;
+        background: linear-gradient(145deg, #ffc13f, #ff7347);
+        box-shadow:
+          0 0 0 13px #ffffff12,
+          0 0 80px #55e6e633;
+      }
+      .mascot:after {
+        width: 245px;
+        height: 245px;
+        background: #0b3552;
+      }
+      .mascot img {
+        position: relative;
+        z-index: 2;
+        width: min(95%, 330px);
+        height: auto;
+        filter: drop-shadow(0 24px 18px #0008);
+        animation: heroRun 1.05s ease-in-out infinite;
+      }
+      .hero-badge {
+        position: absolute;
+        z-index: 3;
+        right: 7%;
+        bottom: 8%;
+        background: var(--cream);
+        color: #563416;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-weight: 900;
+        box-shadow: 0 8px 24px #0006;
+        transform: rotate(-4deg);
+      }
+      @keyframes heroRun {
+        50% {
+          transform: translateY(-10px) rotate(-2deg);
+        }
+      }
+      .stat {
+        border-radius: 16px;
+        padding: 11px 15px;
+        box-shadow: inset 0 1px #ffffff20;
+      }
+      .stage {
+        transition: 0.2s;
+        min-height: 142px;
+        background: linear-gradient(145deg, #12425f, #092940);
+        box-shadow: 0 8px 20px #0003;
+      }
+      .stage:hover:not(:disabled) {
+        transform: translateY(-3px);
+        border-color: var(--cyan);
+        box-shadow: 0 12px 28px #0005;
+      }
+      .stage.done {
+        background: linear-gradient(145deg, #18544e, #0a3438);
+      }
+      .stars {
+        color: var(--gold);
+        margin-top: 8px;
+      }
+      .screen:not(#gameScreen) {
+        min-height: 620px;
+      }
+      .game-wrap {
+        background: #79d3e2;
+      }
+      .pill {
+        box-shadow: 0 5px 18px #0004;
+        backdrop-filter: blur(8px);
+      }
+      .control {
+        box-shadow:
+          0 8px 26px #0006,
+          inset 0 1px #fff5;
+      }
+      .control:active {
+        transform: scale(0.94);
+        background: #1e6680;
+      }
+      .toast {
+        transition: 0.25s;
+        border: 1px solid #55e6e6;
+      }
+      .loading-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+        color: #bdebf0;
+        font-size: 13px;
+      }
+      .loading-chip i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #5fe08d;
+        box-shadow: 0 0 12px #5fe08d;
+      }
+      @media (max-width: 700px) {
+        #app {
+          padding: 0;
+        }
+        .shell {
+          min-height: 100vh;
+          border-radius: 0;
+        }
+        .hero {
+          grid-template-columns: 1fr;
+          text-align: center;
+          padding: 28px 18px;
+        }
+        .hero-actions,
+        .stats {
+          justify-content: center;
+        }
+        .mascot {
+          height: 255px;
+          order: -1;
+        }
+        .mascot:before {
+          width: 210px;
+          height: 210px;
+        }
+        .mascot:after {
+          width: 165px;
+          height: 165px;
+        }
+        .mascot img {
+          width: 220px;
+        }
+        .hero-badge {
+          right: 4%;
+          bottom: 3%;
+        }
+        .hero h2 {
+          font-size: 48px;
+        }
+        .hint {
+          display: none;
+        }
+      }
+    </style>
+    <style>
+      .game-wrap {
+        min-height: 560px;
+      }
+      .controls {
+        bottom: 18px;
+        left: 18px;
+        right: 18px;
+      }
+      .control {
+        width: 86px;
+        height: 64px;
+        background: #06192c78;
+        border-color: #ffffff70;
+        backdrop-filter: blur(6px);
+        opacity: 0.82;
+      }
+      .control:hover,
+      .control:active {
+        opacity: 1;
+      }
+      .hint {
+        bottom: 6px;
+        font-size: 12px;
+        opacity: 0.72;
+      }
+      .energy {
+        position: relative;
+      }
+      .energy:before {
+        content: "⚡";
+        position: absolute;
+        left: -2px;
+        top: 50%;
+        transform: translate(-100%, -50%);
+        filter: drop-shadow(0 2px 3px #000);
+      }
+      @media (max-width: 700px) {
+        .controls {
+          bottom: 10px;
+          left: 8px;
+          right: 8px;
+        }
+        .control {
+          width: 78px;
+          height: 58px;
+          opacity: 0.68;
+        }
+        .game-wrap {
+          min-height: 540px;
+        }
+      }
+      .mission-hud {
+        position: absolute;
+        z-index: 3;
+        top: 64px;
+        left: 14px;
+        display: grid;
+        gap: 5px;
+        pointer-events: none;
+      }
+      .mission-line {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        width: max-content;
+        max-width: calc(100vw - 30px);
+        padding: 6px 10px;
+        border-radius: 10px;
+        background: #06192ca8;
+        color: #d7e9ed;
+        font-size: 12px;
+        backdrop-filter: blur(7px);
+        transition: 0.2s;
+      }
+      .mission-line.done {
+        color: #fff1a2;
+        background: #376128c7;
+      }
+      .mission-line i {
+        font-style: normal;
+        width: 16px;
+        text-align: center;
+      }
+      @media (max-width: 700px) {
+        .mission-hud {
+          top: 58px;
+          left: 8px;
+        }
+        .mission-line {
+          padding: 5px 8px;
+          font-size: 10px;
+        }
+      }
+    </style>
+    <style>
+      /* Clean visual pass */
+      #app {
+        padding: 12px;
+      }
+      .shell {
+        border-radius: 22px;
+        box-shadow: 0 22px 70px #0008;
+      }
+      header {
+        height: 68px;
+        padding: 9px 16px;
+        background: #08263eea;
+      }
+      .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        font-size: 29px;
+        box-shadow: none;
+      }
+      .title h1 {
+        font-size: 20px;
+      }
+      .title small {
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        opacity: 0.72;
+      }
+      nav {
+        gap: 4px;
+      }
+      .icon-btn {
+        min-width: 42px;
+        padding: 8px 10px;
+        border-color: transparent;
+        background: transparent;
+      }
+      .icon-btn:hover {
+        background: #ffffff12;
+      }
+      .hero {
+        min-height: 550px;
+        padding: clamp(28px, 6vw, 64px);
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+      .hero:before {
+        background: radial-gradient(
+          circle at 76% 45%,
+          #55e6e620,
+          transparent 34%
+        );
+      }
+      .hero h2 {
+        font-size: clamp(48px, 7vw, 76px);
+        margin: 10px 0 14px;
+        text-shadow: none;
+      }
+      .hero p {
+        font-size: 16px;
+        line-height: 1.65;
+        max-width: 510px;
+        color: #b9d5dc;
+      }
+      .eyebrow {
+        font-size: 11px;
+        letter-spacing: 0.19em;
+        opacity: 0.78;
+      }
+      .hero-actions {
+        margin: 24px 0 26px;
+        gap: 9px;
+      }
+      .primary {
+        box-shadow: none;
+        padding: 12px 20px;
+      }
+      .hero-actions .btn:not(.primary) {
+        border-color: #ffffff20;
+        background: transparent;
+        color: #bfe5ea;
+      }
+      .stats {
+        display: inline-flex;
+        margin: 0;
+        gap: 0;
+        border: 1px solid #ffffff14;
+        background: #04182766;
+        border-radius: 15px;
+        overflow: hidden;
+      }
+      .stat {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+      .stat + .stat {
+        border-left: 1px solid #ffffff12;
+      }
+      .mascot {
+        height: 340px;
+      }
+      .mascot:before {
+        width: 270px;
+        height: 270px;
+        background: #ffffff08;
+        box-shadow: none;
+      }
+      .mascot:after {
+        width: 210px;
+        height: 210px;
+        background: #55e6e612;
+      }
+      .mascot img {
+        width: min(92%, 290px);
+        filter: drop-shadow(0 18px 14px #0006);
+      }
+      .hero-badge,
+      .loading-chip {
+        display: none;
+      }
+      .screen:not(#gameScreen) {
+        min-height: 570px;
+      }
+      .stage {
+        box-shadow: none;
+        border-color: #ffffff12;
+      }
+      .stage:hover:not(:disabled) {
+        box-shadow: none;
+      }
+      .pill {
+        box-shadow: none;
+      }
+      .panel {
+        box-shadow: 0 24px 70px #0009;
+      }
+      @media (max-width: 700px) {
+        #app {
+          padding: 0;
+        }
+        .hero {
+          padding: 24px 20px 30px;
+          min-height: calc(100vh - 68px);
+        }
+        .mascot {
+          height: 230px;
+        }
+        .mascot:before {
+          width: 190px;
+          height: 190px;
+        }
+        .mascot:after {
+          width: 150px;
+          height: 150px;
+        }
+        .mascot img {
+          width: 205px;
+        }
+        .hero h2 {
+          font-size: 44px;
+        }
+        .hero p {
+          font-size: 14px;
+        }
+        .stats {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+        }
+        .stat {
+          flex: 1;
+          padding: 9px 5px;
+          font-size: 11px;
+        }
+        .title small {
+          display: none;
+        }
+        header {
+          height: 62px;
+        }
+        .icon-btn {
+          min-width: 38px;
+          padding: 7px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="shell">
+        <header>
+          <img class="brand-logo" src="assets/ui/lohd-run-101-logo.png" alt="โลโก้ LOHD RUN 101" />
+          <div class="title">
+            <h1>ปลาหลดรั้น 101</h1>
+            <small>LOHD RUN 101</small>
+          </div>
+          <nav>
+            <button
+              id="soundBtn"
+              class="icon-btn"
+              aria-label="เปิดหรือปิดเสียง"
+            >
+              🔊</button
+            ><button class="icon-btn" data-view="home" aria-label="กลับหน้าแรก">
+              🏠 <span class="text">หน้าแรก</span></button
+            ><button class="icon-btn" data-view="stages" aria-label="เลือกด่าน">
+              🗺️ <span class="text">ด่าน</span></button
+            ><button
+              class="icon-btn"
+              data-view="passport"
+              aria-label="Saket Passport"
+            >
+              📕 <span class="text">Passport</span></button
+            ><button
+              class="icon-btn"
+              data-view="leaderboard"
+              aria-label="อันดับ"
+            >
+              🏆 <span class="text">อันดับ</span>
+            </button>
+          </nav>
+        </header>
+        <main>
+          <section id="home" class="screen">
+            <div class="hero">
+              <div>
+                <div class="eyebrow">DISCOVER ROI ET</div>
+                <h2>วิ่งให้สุด<br /><span>เมืองร้อยเอ็ด</span></h2>
+                <p>
+                  กระโดด สไลด์ เก็บเหรียญ และค้นพบเรื่องราวท้องถิ่นตลอด 20
+                  เส้นทาง
+                </p>
+                <div class="hero-actions">
+                  <button id="continueBtn" class="btn primary">
+                    เริ่มเล่น ▶</button
+                  ><button id="tutorialBtn" class="btn">🫧 ห้องสอนเล่น</button
+                  ><button class="btn" data-view="stages">เลือกด่าน</button>
+                </div>
+                <div class="stats">
+                  <div class="stat">⭐ <b id="homeStars">0/60</b></div>
+                  <div class="stat">🪙 <b id="homeCoins">0</b></div>
+                  <div class="stat">📕 <b id="homeStamps">0/20</b></div>
+                </div>
+              </div>
+              <div class="mascot">
+                <img
+                  src="assets/character/right_facing/run/run15.png"
+                  alt="ตัวละครปลาหลดกำลังวิ่ง"
+                />
+              </div>
+            </div>
+          </section>
+          <section id="tutorial" class="screen hidden">
+            <div class="tutorial-wrap">
+              <div class="tutorial-lab"></div>
+              <div class="bubble" style="left:8%;bottom:8%;width:24px;height:24px"></div>
+              <div class="bubble" style="left:72%;bottom:2%;width:38px;height:38px;animation-delay:-2s"></div>
+              <div class="bubble" style="left:88%;bottom:15%;width:18px;height:18px;animation-delay:-3.4s"></div>
+              <div class="tutorial-card">
+                <div id="tutorialStep" class="tutorial-step">บทเรียน 1 / 4</div>
+                <h2 id="tutorialTitle">ฝึกกระโดด</h2>
+                <div id="tutorialText">กดปุ่มกระโดด หรือ Space / ↑</div>
+                <div id="tutorialProgress" class="tutorial-progress"></div>
+              </div>
+              <img id="tutorialFish" class="tutorial-fish" src="assets/character/right_facing/run/run15.png" alt="ปลาหลดในห้องฝึก" />
+              <div id="tutorialProp" class="tutorial-prop">🪵</div>
+              <div id="tutorialCallout" class="tutorial-callout">เจอกองฟาง → กดกระโดด ↑</div>
+              <div class="tutorial-controls">
+                <button id="tutorialSlide" class="btn">⬇ สไลด์</button>
+                <button id="tutorialJump" class="btn primary">⬆ กระโดด</button>
+              </div>
+            </div>
+          </section>
+          <section id="stages" class="screen hidden">
+            <div class="section-head">
+              <h2>เลือกเส้นทาง</h2>
+              <span class="muted">20 Discovery</span>
+            </div>
+            <div id="stageGrid" class="stages"></div>
+          </section>
+          <section id="passport" class="screen hidden">
+            <div class="section-head">
+              <h2>Saket Passport</h2>
+              <span id="passportCount"></span>
+            </div>
+            <div id="passportGrid" class="passport"></div>
+          </section>
+          <section id="leaderboard" class="screen hidden">
+            <h2>Leaderboard</h2>
+            <div class="namebox">
+              <input
+                id="playerName"
+                maxlength="18"
+                placeholder="ชื่อผู้เล่น"
+              /><button id="saveName" class="btn">บันทึก</button>
+            </div>
+            <table class="board">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>ชื่อ</th>
+                  <th>คะแนน</th>
+                  <th>ด่าน</th>
+                </tr>
+              </thead>
+              <tbody id="scoreRows"></tbody>
+            </table>
+          </section>
+          <section id="gameScreen" class="hidden">
+            <div class="game-wrap">
+              <div class="hud">
+                <div id="hearts" class="pill">❤️❤️❤️</div>
+                <div class="pill water-meter" title="น้ำหล่อเลี้ยง">
+                  <span>💧</span><div class="waterbar"><i id="waterFill"></i></div>
+                </div>
+                <div class="pill">🪙 <span id="coinHud">0</span></div>
+                <div class="pill">⭐ <span id="scoreHud">0</span></div>
+                <div class="pill energy">
+                  <div class="energybar"><i id="energyFill"></i></div>
+                </div>
+                <div class="spacer"></div>
+                <div id="stageHud" class="pill"></div>
+                <button id="pauseBtn" class="icon-btn pause">Ⅱ</button>
+              </div>
+              <div id="missionHud" class="mission-hud"></div>
+              <canvas id="game"></canvas>
+              <div class="controls">
+                <button id="slideBtn" class="control">⬇</button
+                ><button id="jumpBtn" class="control">⬆</button>
+              </div>
+              <div class="hint">Space / ↑ กระโดด • ↓ สไลด์</div>
+              <div id="gameOverlay" class="overlay hidden">
+                <div id="overlayPanel" class="panel"></div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="game.js" defer></script>
+  </body>
+</html>

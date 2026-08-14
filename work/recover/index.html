@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>ปลาหลดรั้น 101 — Web Game</title>
+
+    <!-- SEO & Social Media Metadata -->
+    <meta
+      name="description"
+      content="เกมวิ่งสนุกๆ สะสมเหรียญ ตอบคำถาม และค้นพบจังหวัดร้อยเอ็ด!"
+    />
+    <meta property="og:title" content="ปลาหลดรั้น 101 — Web Game" />
+    <meta
+      property="og:description"
+      content="วิ่งให้ไกล เก็บเหรียญ ตอบคำถาม และค้นพบร้อยเอ็ด!"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="./assets/og-image.png" />
+
+    <!-- Google Fonts & Preconnect (ปรับเปลี่ยนตามฟอนต์ที่ใช้จริงได้) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- CSS Modules -->
+    <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/game.css" />
+    <link rel="stylesheet" href="./styles/ui.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div class="brand">
+          🐟 <span>ปลาหลดรั้น</span> <small>LOHD RUN 101</small>
+        </div>
+        <div class="top-actions">
+          <button type="button" id="loginBtn" class="ghost">เข้าสู่ระบบ</button>
+          <button
+            type="button"
+            id="muteBtn"
+            class="ghost"
+            aria-label="เปิด/ปิดเสียง"
+          >
+            🔊
+          </button>
+          <button
+            type="button"
+            id="resetBtn"
+            class="ghost"
+            aria-label="รีเซ็ตเกม"
+          >
+            ↺
+          </button>
+        </div>
+      </header>
+
+      <section id="menuScreen" class="screen">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="tag">WEB GAME • PROTOTYPE v0.2</div>
+            <h1>ปลาหลดรั้น <b>101</b></h1>
+            <p>วิ่งให้ไกล เก็บเหรียญ ตอบคำถาม และค้นพบร้อยเอ็ด!</p>
+            <div class="hero-buttons">
+              <button type="button" id="startBtn" class="primary">
+                ▶ เริ่มเกม
+              </button>
+              <button type="button" id="stageBtn" class="secondary">
+                🗺️ เลือกด่าน
+              </button>
+              <button type="button" id="passportBtn" class="secondary">
+                🎫 Saket Passport
+              </button>
+              <button type="button" id="leaderboardBtn" class="secondary">
+                🏆 Leaderboard
+              </button>
+            </div>
+            <div class="hint">
+              คีย์บอร์ด: Space / ↑ กระโดด · ↓ สไลด์ · P หยุด
+            </div>
+          </div>
+          <div class="fish-card">
+            <div class="fish-art" aria-hidden="true">
+              <div class="fish-eye"></div>
+              <div class="fish-mouth"></div>
+              <div class="scarf">ผ้าขาวม้า</div>
+            </div>
+            <div class="fish-name">ปลาหลดนักวิ่งสายฮา</div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <article>
+            <span>🪙</span><b id="menuCoins">0</b><small>เหรียญสะสม</small>
+          </article>
+          <article>
+            <span>🏆</span><b id="menuBest">0</b><small>คะแนนสูงสุด</small>
+          </article>
+          <article>
+            <span>📍</span><b id="menuDiscoveries">0/20</b
+            ><small>สถานที่ค้นพบ</small>
+          </article>
+          <article>
+            <span>🎖️</span><b id="menuBadges">0</b><small>Badge</small>
+          </article>
+        </div>
+      </section>
+
+      <section id="stageScreen" class="screen hidden" aria-hidden="true">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>🗺️ เลือกด่าน</h2>
+            <button type="button" id="backMenuBtn" class="ghost">← กลับ</button>
+          </div>
+          <div id="stageGrid" class="stage-grid"></div>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="screen hidden" aria-hidden="true">
+        <div class="game-wrap">
+          <canvas id="gameCanvas" width="960" height="540"></canvas>
+          <div class="hud">
+            <div class="hud-left">
+              <div class="heart" id="hearts" aria-label="พลังชีวิต">❤️❤️❤️</div>
+              <div class="pill">🪙 <span id="coins">0</span></div>
+              <div class="pill">⭐ <span id="score">0</span></div>
+            </div>
+            <div class="hud-center">
+              <div id="stageLabel">Stage 01</div>
+              <div id="combo" class="combo"></div>
+              <div
+                class="progress"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <i id="stageProgress"></i>
+              </div>
+            </div>
+            <div class="hud-right">
+              <div class="energy" role="progressbar">
+                <span>⚡</span><i id="energyBar"></i>
+              </div>
+              <button
+                type="button"
+                id="pauseBtn"
+                class="pause"
+                aria-label="หยุดเกม"
+              >
+                Ⅱ
+              </button>
+            </div>
+          </div>
+          <div id="powerupBar" class="powerup-bar"></div>
+
+          <!-- Touch Controls ป้องกันการกดค้างซูมด้วย touch-action ใน CSS -->
+          <div class="touch-controls">
+            <button type="button" id="slideBtn">SLIDE</button>
+            <button type="button" id="jumpBtn">JUMP</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="passportScreen" class="screen hidden" aria-hidden="true">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>🎫 Saket Passport</h2>
+            <button type="button" class="ghost" data-back>← กลับ</button>
+          </div>
+          <p>สะสมจุด Discovery จาก 20 ด่าน เพื่อปลดล็อกตรา Saket Explorer</p>
+          <div id="passportGrid" class="passport-grid"></div>
+        </div>
+      </section>
+
+      <section id="leaderboardScreen" class="screen hidden" aria-hidden="true">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>🏆 Leaderboard</h2>
+            <button type="button" class="ghost" data-back>← กลับ</button>
+          </div>
+          <p class="hint">
+            ถ้าตั้งค่า Supabase แล้วจะแสดงอันดับจากคลาวด์
+            ถ้ายังไม่ตั้งค่าจะใช้คะแนนในเครื่อง
+          </p>
+          <div id="leaderboardList" class="leaderboard-list"></div>
+        </div>
+      </section>
+
+      <section id="resultScreen" class="screen hidden" aria-hidden="true">
+        <div class="result-card">
+          <div class="result-emoji" id="resultEmoji">🏁</div>
+          <h2 id="resultTitle">จบด่าน!</h2>
+          <p id="resultSubtitle">เก่งมาก!</p>
+          <div class="result-stats">
+            <div><b id="resultScore">0</b><small>คะแนน</small></div>
+            <div><b id="resultCoins">0</b><small>เหรียญ</small></div>
+            <div><b id="resultDistance">0</b><small>เมตร</small></div>
+          </div>
+          <div id="resultDiscovery" class="discovery-box hidden"></div>
+          <div class="hero-buttons">
+            <button type="button" id="retryBtn" class="primary">
+              ↻ เล่นอีกครั้ง
+            </button>
+            <button type="button" id="resultMenuBtn" class="secondary">
+              ⌂ เมนู
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <div
+        id="questionModal"
+        class="modal hidden"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="modal-card">
+          <div class="question-icon">❓</div>
+          <h2>Knowledge Gate</h2>
+          <p id="questionText"></p>
+          <div id="answers" class="answers"></div>
+          <div class="question-time"><i id="questionTimer"></i></div>
+        </div>
+      </div>
+
+      <div id="pauseModal" class="modal hidden" role="dialog" aria-modal="true">
+        <div class="modal-card small">
+          <h2>⏸️ หยุดเกม</h2>
+          <button type="button" id="resumeBtn" class="primary">
+            ▶ เล่นต่อ
+          </button>
+          <button type="button" id="pauseMenuBtn" class="secondary">
+            ⌂ กลับเมนู
+          </button>
+        </div>
+      </div>
+
+      <div id="loginModal" class="modal hidden" role="dialog" aria-modal="true">
+        <div class="modal-card small">
+          <button
+            type="button"
+            id="closeLoginBtn"
+            class="modal-close"
+            aria-label="ปิด"
+          >
+            ×
+          </button>
+
+          <div id="authOfflineNotice" class="hidden">
+            <h2>👤 Demo Login</h2>
+            <p>
+              ยังไม่ได้ตั้งค่า Supabase — ข้อมูลจะเก็บในเครื่อง (localStorage)
+              เท่านั้น
+            </p>
+            <input id="demoName" placeholder="ชื่อผู้เล่น" maxlength="20" />
+            <button type="button" id="saveNameBtn" class="primary">
+              บันทึกชื่อ
+            </button>
+          </div>
+
+          <div id="authLoggedOut" class="hidden">
+            <h2>👤 เข้าสู่ระบบ</h2>
+            <p>
+              สมัครหรือเข้าสู่ระบบเพื่อเก็บคะแนน/เหรียญ/Discovery ไว้บนคลาวด์
+            </p>
+            <form id="authForm" onsubmit="return false;">
+              <input
+                id="authEmail"
+                type="email"
+                placeholder="อีเมล"
+                autocomplete="email"
+                required
+              />
+              <input
+                id="authPassword"
+                type="password"
+                placeholder="รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)"
+                autocomplete="current-password"
+                required
+              />
+              <input
+                id="authUsername"
+                placeholder="ชื่อผู้เล่น (สำหรับสมัครใหม่)"
+                maxlength="20"
+              />
+              <button type="button" id="signInBtn" class="primary">
+                เข้าสู่ระบบ
+              </button>
+              <button type="button" id="signUpBtn" class="secondary">
+                สมัครสมาชิกใหม่
+              </button>
+            </form>
+            <p
+              id="authError"
+              class="hidden"
+              style="color: #b3261e; font-weight: 800; font-size: 14px"
+            ></p>
+          </div>
+
+          <div id="authLoggedIn" class="hidden">
+            <h2>✅ เข้าสู่ระบบแล้ว</h2>
+            <p>อีเมล: <b id="authUserEmail"></b></p>
+            <p>ข้อมูลของคุณจะซิงก์กับ Supabase อัตโนมัติทุกครั้งที่จบด่าน</p>
+            <button type="button" id="signOutBtn" class="secondary">
+              ออกจากระบบ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="toastLayer" class="toast-layer"></div>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
